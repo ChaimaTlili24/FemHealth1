@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Evenement index{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="text-center mb-4">Evenement:</h1>  <div id="google_translate_element"></div>
+    <div id="google_translate_element">
+        <button onclick="speakSelectedText()">Lire en vocal</button>
+        <button onclick="stopSpeaking()">Arrêter</button>
+    </div>
+    
+    <script type="text/javascript">
+        var currentUtterance = null;
+    
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+        }
+    
+        function speakSelectedText() {
+            var selectedText = window.getSelection().toString();
+            if (selectedText) {
+                stopSpeaking();
+                currentUtterance = new SpeechSynthesisUtterance(selectedText);
+                window.speechSynthesis.speak(currentUtterance);
+            } else {
+                alert("Veuillez sélectionner du texte pour le lire à voix haute.");
+            }
+        }
+    
+        function stopSpeaking() {
+            if (currentUtterance !== null) {
+                window.speechSynthesis.cancel();
+                currentUtterance = null;
+            }
+        }
+    
+        function selectLanguage(languageCode) {
+            var select = document.querySelector('.goog-te-combo');
+            for (var i = 0; i < select.options.length; i++) {
+                var option = select.options[i];
+                if (option.value === languageCode) {
+                    select.selectedIndex = i;
+                    select.dispatchEvent(new Event('change'));
+                    break;
+                }
+            }
+        }
+    </script>
+    
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <img src="" />
+    
+
+
+    <div class="dropdown mb-4">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="montantDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Filtrer par montant
+        </button>
+        <div class="dropdown-menu" aria-labelledby="montantDropdown">
+          <a class="dropdown-item" href="{{ path('evenement_list_by_montant', {'montant': -500}) }}">Moins de 500</a>
+          <a class="dropdown-item" href="{{ path('evenement_list_by_montant', {'montant': 500}) }}">Plus de 500</a>
+        </div>
+      </div>
+
+     
+
+
+    <section class="blog_area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <form method="get" action="{{ path('evenement_nom', {'nom' :'nom'}) }}">
+                        <input type="text" name="nom" placeholder="Rechercher un événement...">
+                        <button type="submit">Rechercher</button>
+                    </form>
+                    
+                    
+                    
+                    
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Nom de l'événement</th>
+                                    <th>Montant</th> 
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for evenement in evenement %}
+                                    <tr>
+                                        <td><img src="{{ evenement.image }}" alt="Event Image" style="max-width: 100px;"></td>
+                                        <td>{{ evenement.nom }}</td>
+                                        <td>{{ evenement.montant }}</td> <!-- Display the montant here -->
+                                        <td>
+                                            <a href="{{ path('detailevent', {'id': evenement.getId()}) }}" class="btn btn-primary">Voir les détails</a>
+                                            <!-- Ajouter le bouton "Signaler" avec le lien vers la route de signalement -->
+                                            <form action="{{ path('evenement_signaler', {'id': evenement.id}) }}" method="post">
+                                                <button type="submit" class="btn btn-danger">Signaler</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+
+
+
+
+    
+
+{% endblock %}
