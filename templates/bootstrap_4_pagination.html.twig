@@ -9,6 +9,7 @@
  *
  */
 #}
+
 {% if pageCount > 1 %}
     <nav>
         {% set classAlign = (align is not defined) ? '' : align=='center' ? ' justify-content-center' : (align=='right' ? ' justify-content-end' : '') %}
@@ -43,7 +44,9 @@
             {% for page in pagesInRange %}
                 {% if page != current %}
                     <li class="page-item">
-                        <a class="page-link" href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+                        <a class="page-link" href="{{ path(route, query|merge({(pageParameterName): page})) }}">
+                            <span style="display: inline-block; width: 30px; height: 30px; text-align: center; line-height: 30px; border: 1px solid #ccc; border-radius: 5px;">{{ page }}</span>
+                        </a>
                     </li>
                 {% else %}
                     <li class="page-item active">

@@ -11,16 +11,25 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
-
+use App\Form\EditProfileFormType;
+use App\Repository\SponsorRepository;
+use App\Repository\PublicationRepository;
+#[Route('/dashbord')]
 class DashboardController extends AbstractController
 {
 
-    /**
-     * @Route("/", name="app_dashboard_front")
-     */
-    public function index(): Response
-    {
-        return $this->render('dashboard/front.html.twig');
+    #[Route('/', name: 'app_dashboard_front', methods: ['GET'])]
+    public function index(SponsorRepository $sponsorRepository,PublicationRepository $publicationRepository): Response
+    {   $sponsorStats = $sponsorRepository->findSponsorWithMostProducts();
+        // Récupérer les données pour les statistiques des publications
+        $publicationStats = $publicationRepository->findPublicationWithCommentCount(); // Code pour récupérer les statistiques des publications
+
+        // Passer les données au template Twig
+        return $this->render('dashboard/index.html.twig', [
+            'sponsorStats' => $sponsorStats,
+            'publicationStats' => $publicationStats,
+        ]);
+
     }
 
     /**
@@ -103,7 +112,7 @@ class DashboardController extends AbstractController
             return $this->redirectToRoute('edit_profile');
         }
 
-        return $this->render('dashboard/edit_profile.html.twig', [
+        return $this->render('dashboard/profil.html.twig', [
             'form' => $form->createView(),
         ]);
     }

@@ -18,6 +18,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 #[Route('/commentaire')]
+
 class CommentaireController extends AbstractController
 {
     #[Route('/', name: 'app_commentaire_index')]
@@ -28,57 +29,54 @@ class CommentaireController extends AbstractController
             'commentaires' => $commentaireRepository->findAll(),
         ]);
     }
-    
     #[Route('/new/{id}', name: 'app_commentaire_new')]
     public function new(int $id, Request $request, EntityManagerInterface $entityManager, PublicationRepository $publicationRepository): Response
-    {
-        // Fetch the associated publication
-        $publication = $publicationRepository->find($id);
-        if (!$publication) {
-            throw $this->createNotFoundException('No publication found for id '.$id);
-        }
-    
-        // Create a new Commentaire entity and associate it with the publication
-        $commentaire = new Commentaire();
-        $commentaire->setPublication($publication);
-        
-        // Set the default value of 'like' attribute to 0
-        $commentaire->setLikes(0);
-    
-        // Set the user associated with the comment
-        $user = $this->getUser(); // Assuming you are using Symfony's security component
-        if ($user instanceof UserInterface) {
-            $commentaire->setUser($user);
-        } else {
-            // Handle the case where user is not logged in or not available
-            // You can also throw an exception if necessary
-            // For example:
-            throw new \RuntimeException('User not authenticated.');
-        }
-    
-        $form = $this->createForm(Commentaire1Type::class, $commentaire);
-    
-        $form->handleRequest($request);
-    
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($commentaire);
-            $entityManager->flush();
-    
-            return $this->redirectToRoute('app_publication_show', ['id' => $publication->getId()]);
-        }
-    
-        return $this->render('commentaire/new.html.twig', [
-            'commentaire' => $commentaire,
-            'form' => $form->createView(), // Pass the form directly to the template
-            'id' => $id,
-        ]);
+{
+    // Fetch the associated publication
+    $publication = $publicationRepository->find($id);
+    if (!$publication) {
+        throw $this->createNotFoundException('No publication found for id '.$id);
     }
 
-#[Route('/commentaire/{id}/like', name: 'like_commentaire', methods: ['POST'])]
-public function likeCommentaire(Request $request, Commentaire $commentaire): Response
+    // Create a new Commentaire entity and associate it with the publication
+    $commentaire = new Commentaire();
+    $commentaire->setPublication($publication);
+
+    // Set the user associated with the comment
+    $user = $this->getUser(); // Assuming you are using Symfony's security component
+    if ($user instanceof UserInterface) {
+        $commentaire->setUser($user);
+    } else {
+        // Handle the case where user is not logged in or not available
+        // You can also throw an exception if necessary
+        // For example:
+        throw new \RuntimeException('User not authenticated.');
+    }
+
+    $form = $this->createForm(Commentaire1Type::class, $commentaire);
+
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $entityManager->persist($commentaire);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_publication_show', ['id' => $publication->getId()]);
+    }
+
+    return $this->render('commentaire/new.html.twig', [
+        'commentaire' => $commentaire,
+        'form' => $form->createView(), // Pass the form directly to the template
+        'id' => $id,
+    ]);
+}
+
+#[Route('/{id}/like', name: 'like_commentaire', methods: ['POST'])]
+public function likeCommentaire(Request $request, Commentaire $commentaire,EntityManagerInterface $entityManager): Response
 {
-    $commentaire->setLikes($commentaire->getLikes() + 1);
-    $entityManager = $this->getDoctrine()->getManager();
+    //$commentaire->addLike(); // Ajouter un like au commentaire
+    $commentaire->setLikes($commentaire->getLikes()+1);
+    $entityManager->persist($commentaire);
     $entityManager->flush();
 
     return new JsonResponse(['success' => true]);

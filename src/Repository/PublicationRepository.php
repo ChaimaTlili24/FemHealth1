@@ -47,6 +47,15 @@ class PublicationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+    public function findPublicationWithCommentCount()
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.commentaires', 'c') // Supposons que 'comments' est le nom de la relation entre Publication et Comment
+            ->select('p.id as publicationId, COUNT(c.id) as commentCount')
+            ->groupBy('p.id')
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Publication[] Returns an array of Publication objects
 //     */

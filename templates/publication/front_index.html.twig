@@ -3,14 +3,26 @@
 {% block title %}Publication index{% endblock %}
 
 {% block body %}
-
+<style>
+    .pagination-square {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    line-height: 30px;
+    border: 2px solid hwb(340 16% 55%);
+    border-radius: 5px;
+    background-color: #f8f9fa; /* Couleur de fond */
+    color: #333; /* Couleur du texte */
+    margin-right: 5px; /* Espacement entre les carrés */
+}</style>
 <div class="container mt-5">
     <div class="d-flex flex-column align-items-start">
         <!-- Formulaire de recherche -->
         <form action="{{ path('frontmetier') }}" method="get">
             <input type="text" name="search" id="searchInput" placeholder="Search...">
             <input type="date" name="date" id="dateInput">
-            <button type="submit" id="resetDateFilterButton">Reset date filter</button>
+            <button type="submit" id="resetDateFilterButton"> filter</button>
         </form>
     </div>
     
@@ -46,9 +58,11 @@
 
     {# Pagination Navigation #}
     <div class="row mt-4">
-        <div class="col-md-12">
+        <div class="col-md-4"></div> {# Colonne vide à gauche de la pagination #}
+        <div class="col-md-4 text-center"> {# Colonne pour la pagination, centrée #}
             {{ knp_pagination_render(p) }}
         </div>
+        <div class="col-md-4"></div> {# Colonne vide à droite de la pagination #}
     </div>
 </div>
 

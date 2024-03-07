@@ -13,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Knp\Component\Pager\PaginatorInterface;
 #[Route('/publication')]
+
 class PublicationController extends AbstractController
 {
     #[Route('/', name: 'app_publication_index')]
@@ -159,5 +160,6 @@ class PublicationController extends AbstractController
 
         return $this->redirectToRoute('app_publication_index');
     }
+    
      
 }

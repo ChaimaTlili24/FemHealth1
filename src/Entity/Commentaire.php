@@ -6,6 +6,9 @@ use App\Repository\CommentaireRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Publication;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
 /**
  * @ORM\Entity(repositoryClass=CommentaireRepository::class)
  */
@@ -34,11 +37,11 @@ class Commentaire
      * @ORM\Column(type="boolean")
      */
     private $active;
+/**
+     * @ORM\Column(type="integer")
+     */
+    private $likes = 0;
 
-   /**
- * @ORM\Column(name="likes", type="integer", options={"default": 0})
- */
-private $likes;
 
 
 
@@ -86,7 +89,6 @@ private $likes;
     {
         // Par défaut, un nouveau commentaire est actif
         $this->active = true;
-        $this->likes = 0; // Par défaut, aucun like
         $this->datecomnt = new \DateTime('now');
     }
 
@@ -102,18 +104,34 @@ private $likes;
         return $this;
     }
 
-    public function getLikes(): ?int
+     /**
+     * Get the number of likes for this comment.
+     *
+     * @return int
+     */
+    public function getLikes(): int
     {
         return $this->likes;
     }
-    
-    public function setLikes(int $likes): self
+
+    /**
+     * Add a like for the given user.
+     *
+     * @return $this
+     */
+    public function addLike()
     {
-        $this->likes = $likes;
+        $this->likes++;
+
         return $this;
     }
-    
+    public function setLikes(?int $likes): self
+    {
+        $this->likes = $likes;
 
+        return $this;
+    }
+    // ...
     public function getPublication(): ?Publication
     {
         return $this->publication;

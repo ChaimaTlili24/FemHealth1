@@ -113,9 +113,12 @@
             </li>
         </li>
         <!-- Dashboard -->
-        <li class="nav-item menu-items">
-            <a class="nav-link" href="{{ path("app_sponsor_stats") }}">Dashboard</a>
-        </li>
+        <ul class="navbar-nav">
+            <li class="nav-item menu-items">
+                <a class="nav-link" href="{{ path("app_dashboard_front") }}">Dashboard</a>
+            </li>
+            <!-- Autres éléments de la barre de navigation ici -->
+        </ul>
             <li class="nav-item menu-items">
                 <a class="nav-link" href="{{ path('app_users_admin') }}">
               <span class="menu-icon">
@@ -371,14 +374,14 @@
                              aria-labelledby="profileDropdown">
                             <h6 class="p-3 mb-0">Profile</h6>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
+                            <a href="{{ path('edit_profile') }}" class="dropdown-item preview-item">
                                 <div class="preview-thumbnail">
                                     <div class="preview-icon bg-dark rounded-circle">
                                         <i class="mdi mdi-settings text-success"></i>
                                     </div>
                                 </div>
                                 <div class="preview-item-content">
-                                    <p class="preview-subject mb-1">Settingsqs</p>
+                                    <p class="preview-subject mb-1">Profil</p>
                                 </div>
                             </a>
                             <div class="dropdown-divider"></div>
